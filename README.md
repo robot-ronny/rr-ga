@@ -7,4 +7,5 @@ cd functions
 npm install 
 
 **Deploy**
+
 firebase deploy
