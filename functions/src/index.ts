@@ -78,4 +78,31 @@ app.intent(
   }
 );
 
+app.intent(
+    "hands",
+    (
+      conv: DialogflowConversation,
+      { updown, hand, degree }: { updown: string; hand: string, degree: string }
+    ) => {
+      let commands = db.ref("commands/hands");  
+      let data: any = { updown: updown };
+      if(hand) {
+          data["hand"] = hand;
+      }
+      if(degree) {
+          data["degrees"] = degree;
+      }
+        console.log(`Data ${data}`);
+      return commands
+        .update(data)
+        .then(result => {
+          return conv.ask(`I have moved the ${(hand) ? hand.toLowerCase() : 'same'} hand by ${(degree ? degree.toLowerCase() : 'same degree')} ${updown.toLowerCase()}`);
+        })
+        .catch(error => {
+          console.log(error);
+          return conv.ask(`Something went wrong, please try again... `);
+        });
+    }
+  );
+
 export const dialogflowFirebaseFulfillment = functions.https.onRequest(app);
